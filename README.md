@@ -1,9 +1,9 @@
-# [PROJECT NAME] — Evidence-Grounded Product Intelligence Pipeline
+# SpecForge — Evidence-Grounded Product Intelligence Pipeline
 
 > Built for **Unilog UniHack 2026** — "AI-Powered Product Intelligence" challenge (Jul 29 – Aug 23, 2026)
 
-**Team:** [TEAM NAME / MEMBERS]
-**Repo:** [REPO LINK]
+**Team:** THE AIB
+**Repo:** https://github.com/rohitdecodes/SpecForge
 
 ---
 
