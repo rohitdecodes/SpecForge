@@ -1,0 +1,73 @@
+{
+  "_note": "Categories derived from Part_Manuf + Part_Desc keyword rules - there is no explicit Category column in the input. Two deep-focus categories are marked.",
+  "categories": [
+    "Abrasives / Cut-Off Discs",
+    "Appliances",
+    "Decking",
+    "Electrical / Wiring Devices",
+    "Lighting",
+    "Lumber / Millwork",
+    "Other",
+    "Power Tools & Accessories",
+    "Railings / Balusters",
+    "Saw Blades & Abrasives"
+  ],
+  "row_counts": {
+    "Other": 243,
+    "Lighting": 167,
+    "Abrasives / Cut-Off Discs": 123,
+    "Railings / Balusters": 101,
+    "Power Tools & Accessories": 93,
+    "Appliances": 85,
+    "Decking": 81,
+    "Saw Blades & Abrasives": 46,
+    "Electrical / Wiring Devices": 42,
+    "Lumber / Millwork": 19
+  },
+  "deep_focus": [
+    {
+      "name": "Abrasives / Cut-Off Discs",
+      "manufacturer": "Milwaukee Accessory (4031)",
+      "rows": 123,
+      "attributes": [
+        "diameter",
+        "thickness",
+        "arbor",
+        "material(target)",
+        "product_type",
+        "grit(rare)",
+        "bundle_count"
+      ]
+    },
+    {
+      "name": "Appliances",
+      "manufacturer": "Appliance Dealers Cooperative (APPDE)",
+      "rows": 85,
+      "attributes": [
+        "brand(oem)",
+        "appliance_type",
+        "finish_color",
+        "display_flag",
+        "voltage*",
+        "amperage*",
+        "sound_dBA*",
+        "dimensions*"
+      ],
+      "_starred_need_phase2": [
+        "voltage",
+        "amperage",
+        "sound_dBA",
+        "dimensions"
+      ]
+    }
+  ],
+  "ground_truth": {
+    "expected_output_row_count": 2,
+    "linked_part_numbers": [
+      "PDSH4816AF",
+      "WDTS7024RZ"
+    ],
+    "category": "Appliances (Dishwashers)",
+    "_note": "Only 2 expected-output ground-truth delivery rows exist - both dishwashers; exact-match metrics vs ground truth are therefore over n=2 only (documented honestly in PHASE_1_SUMMARY.md)."
+  }
+}

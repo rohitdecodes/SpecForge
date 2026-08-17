@@ -1,0 +1,48 @@
+{
+  "_note": "Materials mined from real 'Part_Desc' tokens in data/raw/input.csv (1000 rows). Synonym keys are case-insensitive. 'unverified_extras' are common industry synonyms NOT present in the actual dataset - kept separate per PHASE_1 Step 5.",
+  "_dataset_discrepancy": "PHASE_1.md assumed PVF-fitting materials like Brass/Bronze/Carbon Steel. The real dataset has none of those: domain is abrasives + appliances + decking + lighting. Confirmed list reflects actual observed tokens (e.g. 'metal' as cut-off-disc substrate; 'SS'/'BSS' as dishwasher stainless-steel finish codes; 'PVC'/'Composite' from decking).",
+  "canonical": [
+    "Metal",
+    "Aluminum",
+    "Stainless Steel",
+    "PVC",
+    "Composite",
+    "Wood",
+    "Oak",
+    "Vinyl",
+    "Diamond",
+    "Ceramic",
+    "Glass",
+    "Plastic"
+  ],
+  "synonyms": {
+    "metal": "Metal",
+    "ss": "Stainless Steel",
+    "bss": "Stainless Steel",
+    "alum": "Aluminum",
+    "aluminum": "Aluminum",
+    "pvc": "PVC",
+    "composite": "Composite",
+    "wood": "Wood",
+    "oak": "Oak",
+    "vinyl": "Vinyl",
+    "diamond": "Diamond",
+    "ceramic": "Ceramic",
+    "glass": "Glass"
+  },
+  "unverified_extras": [
+    "Brass",
+    "Bronze",
+    "Carbon Steel",
+    "Cast Iron",
+    "Galvanized Steel",
+    "Aluminium (Brit. spelling of Aluminum)",
+    "Stainless (literal token)",
+    "Plastic (literal token)"
+  ],
+  "unverified_extras_note": "Common PVF-fitting materials from the README's example domain ('3/8 CPLG BRS 150#'). NOT present in the actual dataset; included only so Phase 2 retrieval has a known alias list. Never used as a positive match target in the Phase 1 rule layer.",
+  "traceability": {
+    "verified_by": "tests/test_extraction.py::test_lov_synonyms_traceable_to_real_rows",
+    "missing_at_build_time": []
+  }
+}

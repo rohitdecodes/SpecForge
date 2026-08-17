@@ -1,0 +1,108 @@
+{
+  "_note": "Unit synonym maps + canonical target per dimension. Built from concrete tokens observed in Part_Desc: '\"' (inches), '\\'' (feet), 'mm', 'V', 'A', 'W', 'K' (Kelvin color temp on LED rows). The README/PHASE_1 'pressure' dimension (#/psi) has ZERO hits in the 1000 rows and is therefore absent; retained only as an explicit 'not_observed' note for Phase-2 retrieval aliasing.",
+  "size": {
+    "canonical_unit": "in",
+    "synonyms": {
+      "\"": "in",
+      "in": "in",
+      "mm": "mm",
+      "cm": "cm"
+    },
+    "unverified_extras": [
+      "inch",
+      "inches"
+    ],
+    "unverified_extras_note": "Word-form 'inch'/'inches' does NOT appear in any of the 1000 Part_Desc rows (the dataset uses the \" symbol throughout). Kept as known industry aliases for Phase 2 retrieval aliasing.",
+    "places": [
+      "diameter",
+      "thickness",
+      "arbor",
+      "length",
+      "width",
+      "height",
+      "depth"
+    ]
+  },
+  "length_ft": {
+    "canonical_unit": "ft",
+    "synonyms": {
+      "'": "ft",
+      "ft": "ft",
+      "foot": "ft"
+    },
+    "unverified_extras": [
+      "feet"
+    ],
+    "unverified_extras_note": "Word-form 'feet' does NOT appear in any of the 1000 Part_Desc rows - the dataset uses the apostrophe (6', 16', 6'x36\") and occasionally the abbreviation 'ft'. Kept as a known industry alias for Phase 2 without polluting the confirmed list.",
+    "_note": "Used where the dimension is clearly the long stock length (decking, railing, sanding belt length) - '16', '6'', '6'x36\"."
+  },
+  "voltage": {
+    "canonical_unit": "V",
+    "synonyms": {
+      "v": "V",
+      "volt": "V",
+      "volts": "V"
+    }
+  },
+  "amperage": {
+    "canonical_unit": "A",
+    "synonyms": {
+      "a": "A",
+      "amp": "A",
+      "amps": "A",
+      "ampere": "A",
+      "amperes": "A"
+    }
+  },
+  "wattage": {
+    "canonical_unit": "W",
+    "synonyms": {
+      "w": "W",
+      "watt": "W",
+      "watts": "W",
+      "kw": "kW"
+    }
+  },
+  "color_temperature": {
+    "canonical_unit": "K",
+    "synonyms": {
+      "k": "K",
+      "kelvin": "K"
+    },
+    "_note": "Lighting color-temperature suffix on LED rows ('10w LED 6\" Retro 50k')."
+  },
+  "sound_level": {
+    "canonical_unit": "dBA",
+    "synonyms": {
+      "dba": "dBA",
+      "db": "dBA"
+    },
+    "_note": "Appears only on the 2 expected-output dishwasher rows ('47 dBA', '41 dBA'), never in the 1000 input Part_Desc rows - will be a Phase 2 retrieval target."
+  },
+  "pressure": {
+    "canonical_unit": "psi",
+    "synonyms": {
+      "#": "psi",
+      "psi": "psi",
+      "bar": "bar"
+    },
+    "not_observed_in_dataset": true,
+    "_note": "README's example ('150#') is from a different domain. 0 pressure tokens appear anywhere in data/raw/input.csv. Kept here purely so Phase 2 doesn't have to invent it; not asserted against any input row."
+  },
+  "weight": {
+    "canonical_unit": "lb",
+    "synonyms": {
+      "lb": "lb",
+      "lbs": "lb",
+      "pound": "lb",
+      "pounds": "lb",
+      "kg": "kg",
+      "g": "g"
+    },
+    "not_observed_in_input": true,
+    "_note": "No weight values in Part_Desc; only in expected-output WEIGHT/WEIGHT_UOM."
+  },
+  "traceability": {
+    "verified_by": "tests/test_extraction.py::test_units_synonyms_traceable_to_real_rows"
+  }
+}

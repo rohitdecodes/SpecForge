@@ -1,0 +1,88 @@
+{
+  "_note": "PHASE_1 Step 5 named this file connection_types.json ('connection/fitting type'). The real dataset contains NO PVF-style connection type (no thread/flare/socket tokens in any of the 1000 rows). The closest real 'type' attributes are product_type, mount_type, finish_color. This LOV is therefore repurposed as the type/mount/finish dictionary - all entries below are mined from real Part_Desc tokens, verified case-insensitive against the dataset.",
+  "canonical": [
+    "Metal Cut Off Disc",
+    "Sanding Belt",
+    "Sanding Disc",
+    "Saw Blade",
+    "Light Fixture",
+    "Strip Light",
+    "Dishwasher",
+    "Dryer",
+    "Washer",
+    "Laundry Center",
+    "Inflator",
+    "Receptacle",
+    "Switch",
+    "Snip",
+    "Rail Kit",
+    "Rail Panel",
+    "Baluster",
+    "Decking",
+    "Plug",
+    "Screw"
+  ],
+  "synonyms": {
+    "metal cut off disc": "Metal Cut Off Disc",
+    "cut off disc": "Metal Cut Off Disc",
+    "cut-off": "Metal Cut Off Disc",
+    "dko": "Metal Cut Off Disc",
+    "sanding belt": "Sanding Belt",
+    "stikit": "Sanding Disc",
+    "abranet": "Sanding Disc",
+    "abrasive": "Sanding Disc",
+    "saw blade": "Saw Blade",
+    "blade": "Saw Blade",
+    "wall light": "Light Fixture",
+    "wall lt": "Light Fixture",
+    "bath light": "Light Fixture",
+    "strip light": "Strip Light",
+    "strip": "Strip Light",
+    "dishwasher": "Dishwasher",
+    "dryer": "Dryer",
+    "washer": "Washer",
+    "laundry center": "Laundry Center",
+    "inflator": "Inflator",
+    "outlet": "Receptacle",
+    "switch": "Switch",
+    "snip": "Snip",
+    "rail kit": "Rail Kit",
+    "rail panel": "Rail Panel",
+    "baluster": "Baluster",
+    "decking": "Decking",
+    "plug": "Plug",
+    "screw": "Screw"
+  },
+  "mount_type": {
+    "_note": "Resolved from Part_Desc tokens; full Mount Type values (Built-in/Leg) appear in the 2 expected-output rows.",
+    "synonyms": {
+      "leg": "Leg",
+      "built-in": "Built-in",
+      "built in": "Built-in",
+      "plug-in": "Plug-in",
+      "plug in": "Plug-in"
+    }
+  },
+  "finish_color": {
+    "_note": "Appliance finish-color codes observed as 2-letter suffices on APPDE rows.",
+    "synonyms": {
+      "ss": "Stainless Steel",
+      "bss": "Stainless Steel",
+      "wh": "White",
+      "bk": "Black",
+      "blk": "Black"
+    }
+  },
+  "unverified_extras": [
+    "Threaded",
+    "Flare",
+    "Socket Weld",
+    "Sweat",
+    "NPT"
+  ],
+  "unverified_extras_note": "PVF-fitting connection-type tokens - present in the README example but NOT in the actual dataset. Documented for Phase 2 retrieval aliasing only.",
+  "traceability": {
+    "verified_by": "tests/test_extraction.py::test_lov_synonyms_traceable_to_real_rows",
+    "missing_at_build_time": []
+  }
+}
