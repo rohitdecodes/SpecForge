@@ -1,0 +1,21 @@
+Mfg_Part_Num,Part_Desc,Part_Manuf,Category,voltage,amperage,sound_level,dimensions,mount_type,diameter,thickness,arbor,grit,material,notes
+49-94-0013,"49-94-0013 Milw 5""x.045""x7/8"" Metal Cut Off Disc",Milwaukee Accessory (4031),Abrasives,,,,,,5 in,.045 in,7/8 in,,Metal,Milwaukee spec sheet needed for any missing fields
+49-94-0029,"49-94-0029 Milw 6-1/2""x1/8""x5/8"" DKO Metal Cut Off Disc",Milwaukee Accessory (4031),Abrasives,,,,,,6-1/2 in,1/8 in,5/8 in,,Metal,
+49-94-0033,"49-94-0033 Milw 7""x1/16""x7/8"" Metal Cut Off Disc",Milwaukee Accessory (4031),Abrasives,,,,,,7 in,1/16 in,7/8 in,,Metal,
+49-94-0001,"49-94-0001 Milw 4""x.040""x5/8"" Metal Cut Off Disc",Milwaukee Accessory (4031),Abrasives,,,,,,4 in,.040 in,5/8 in,,Metal,
+49-94-0039,"49-94-0039 Milw 7""x1/8""x5/8"" DKO Metal Cut Off Disc",Milwaukee Accessory (4031),Abrasives,,,,,,7 in,1/8 in,5/8 in,,Metal,
+49-94-0043,"49-94-0043 Milw 9""x3/32""x7/8"" Metal Cut Off Disc",Milwaukee Accessory (4031),Abrasives,,,,,,9 in,3/32 in,7/8 in,,Metal,
+49-94-0048,"49-94-0048 Milw 12""x7/64""x1"" Metal Cut Off Disc General Purpose",Milwaukee Accessory (4031),Abrasives,,,,,,12 in,7/64 in,1 in,,Metal,
+49-94-0053,"49-94-0053 Milw 12""x1/8""x1"" Metal Cut Off Disc",Milwaukee Accessory (4031),Abrasives,,,,,,12 in,1/8 in,1 in,,Metal,
+49-94-0058,"49-94-0058 Milw 12""x1/8""x20mm Metal Cut Off Disc",Milwaukee Accessory (4031),Abrasives,,,,,,12 in,1/8 in,20 mm,,Metal,
+49-94-0063,"49-94-0063 Milw 14""x7/64""x1"" Metal Cut Off Disc General Purpose",Milwaukee Accessory (4031),Abrasives,,,,,,14 in,7/64 in,1 in,,Metal,
+KDFM404KPS,KDFM404KPS Dishwasher SS,Appliance Dealers Cooperative (APPDE),Appliances,120,15,47,24 in W x 24-1/4 in D,Leg,,,,Stainless Steel,KitchenAid KDFM404KPS specs
+PDSH4816AF,PDSH4816AF Dishwasher SS - Display Only,Appliance Dealers Cooperative (APPDE),Appliances,120,15,47,24 in W x 24-1/4 in D,Leg,,,,Stainless Steel,GT row: Frigidaire Professional Series
+PDT715SYVFS,PDT715SYVFS Ge Dishwasher SS,Appliance Dealers Cooperative (APPDE),Appliances,,,,,,,Built-in,,,,Stainless Steel,GE Profile PDT715SYVFS — manual lookup needed
+LDPH5554D,LDPH5554D LG Dishwasher BSS,Appliance Dealers Cooperative (APPDE),Appliances,,,,,,,Built-in,,,,Stainless Steel,LG LDPH5554D — manual lookup needed
+WDTS7024RZ,WDTS7024RZ Dishwasher SS - Display Only,Appliance Dealers Cooperative (APPDE),Appliances,120,10,41,33-7/16 in H x 23-7/8 in W x 22-5/8 in D,Built-in,,,,Stainless Steel,GT row: Whirlpool Eco Series
+PDD415PYYFS,PDD415PYYFS GE Dishwasher SS,Appliance Dealers Cooperative (APPDE),Appliances,,,,,,,Built-in,,,,Stainless Steel,GE Profile PDD415PYYFS — manual lookup needed
+KDTS424SBE,KDTS424SBE Kitchen Aid Dishwasher Bk,Appliance Dealers Cooperative (APPDE),Appliances,,,,,,,Built-in,,,,Black,KitchenAid KDTS424SBE — manual lookup needed
+KDTS324SPS,KDTS324SPS Kitchen Aid Dishwasher SS,Appliance Dealers Cooperative (APPDE),Appliances,,,,,,,Built-in,,,,Stainless Steel,KitchenAid KDTS324SPS — manual lookup needed
+KDPS624SJP,KDPS624SJP Dishwasher Juniper - Display Only,Appliance Dealers Cooperative (APPDE),Appliances,,,,,,,Built-in,,,,Stainless Steel,KitchenAid KDPS624SJP — manual lookup needed
+KDTS624SBE,KDTS624SBE Dishwasher BO Display Only,Appliance Dealers Cooperative (APPDE),Appliances,,,,,,,Built-in,,,,Black,KitchenAid KDTS624SBE — manual lookup needed
