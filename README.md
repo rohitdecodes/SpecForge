@@ -86,7 +86,7 @@ flowchart TD
 | Embeddings | `sentence-transformers` (e.g. `all-MiniLM-L6-v2`) | Free, small, CPU-friendly |
 | Vector index | `faiss-cpu` | Local, no hosting cost |
 | Document parsing | `PyMuPDF`, `requests`/`BeautifulSoup` | For manufacturer PDFs/pages |
-| LLM (extraction fallback + generation) | Open-weight instruct model — Phi-4-mini-instruct or Qwen2.5/3 (3B–8B) for CPU-only; Mistral-class model if a free GPU (Colab) is available | Never used as a source of facts, only extraction-over-evidence and paraphrasing |
+| LLM (extraction fallback + generation) | Open-weight instruct model — `Qwen/Qwen2.5-3B-Instruct` (natively supported, no `trust_remote_code`; runs on CPU locally, fp16 on a T4) | Never used as a source of facts, only extraction-over-evidence and paraphrasing |
 | Storage | SQLite / JSON | Provenance record per product |
 | Review interface | Streamlit or CSV | Minimal HITL surface |
 
@@ -109,25 +109,30 @@ Measured against the provided 200-item ground truth:
 .
 ├── data/
 │   ├── raw/               # 1000 input rows, 2 ground-truth delivery rows
-│   ├── lov/               # LOV/unit JSON files (Phase 1)
-│   ├── processed/         # field_inventory.md (Phase 1)
-│   ├── eval/              # dev ground truth (Phase 2)
+│   ├── lov/               # LOV/unit JSON files (Phase 1) + appliance_brands.json (Phase 3)
+│   ├── processed/         # field_inventory.md (Phase 1), review_queue.json (Phase 2)
+│   ├── eval/              # dev ground truth + live run results (Phase 2/3)
 │   └── cache/             # fetched web pages, gitignored (Phase 2)
 ├── src/
 │   ├── extraction/        # regex + NER rules (Phase 1) + llm_extract (Phase 2)
 │   ├── retrieval/         # search, fetch, parse, index (Phase 2)
 │   ├── normalization/     # LOV + unit mapping (Phase 1)
-│   ├── brand/             # brand resolution waterfall (Phase 2)
+│   ├── brand/             # brand resolution waterfall (Phase 2) + embedded brand (Phase 3)
 │   ├── confidence/        # scoring + review-flag logic (Phase 2)
 │   ├── generation/        # LLM title/description generation (Phase 2)
+│   ├── eval/              # evaluation harness + naive baseline (Phase 3)
 │   └── pipeline.py        # orchestrates the cascade end-to-end (Phase 2)
+├── review/                # minimal human review UI (Phase 3)
 ├── tests/                 # pytest test files
-├── scripts/               # build_lov.py, smoke_rules.py
+├── scripts/               # build_lov.py, smoke_rules.py, verify_embedded_brand.py
 ├── docs/
 │   ├── PHASE_1.md
 │   ├── PHASE_2.md
+│   ├── PHASE_3.md
 │   ├── PHASE_1_SUMMARY.md
-│   └── PHASE_2_SUMMARY.md
+│   ├── PHASE_2_SUMMARY.md
+│   ├── PHASE_3_SUMMARY.md
+│   └── EVALUATION_REPORT.md
 ├── requirements.txt
 └── README.md
 ```
@@ -161,8 +166,8 @@ Built in three phases, each with its own detailed step-by-step plan (`docs/PHASE
 | Phase | Goal | Status |
 |---|---|---|
 | **Phase 1 — Foundation** | Data audit, deterministic extraction layer, LOV/unit tables for the target category | ✅ Complete — 27 tests pass, summary at `docs/PHASE_1_SUMMARY.md` |
-| **Phase 2 — Grounding** | Evidence retrieval, LLM integration (extraction fallback + generation), confidence scoring | 🔨 In progress — see `docs/PHASE_2.md` |
-| **Phase 3 — Trust & polish** | Human review interface, evaluation harness, baseline comparison, demo prep | Not started |
+| **Phase 2 — Grounding** | Evidence retrieval, LLM integration (extraction fallback + generation), confidence scoring | ✅ Complete — 60 tests pass, summary at `docs/PHASE_2_SUMMARY.md` |
+| **Phase 3 — Trust & polish** | Human review interface, evaluation harness, baseline comparison, demo prep | 🔨 In progress — see `docs/PHASE_3.md` |
 
 *(Detailed plan for the active phase lives in `docs/PHASE_N.md`.)*
 
@@ -173,6 +178,16 @@ Built in three phases, each with its own detailed step-by-step plan (`docs/PHASE
 - **Rule-layer resolves 16 attributes** at rates from 73.7% (`part_number_echo`) down to 0% (`sound_level`). Deterministic 0% coverage on: Mounting Type, Voltage Rating, Amperage Rating, Size, Sound Level — these must come from Phase 2 retrieval.
 - **`E1_Brand` is `-- Unbranded --`** in 799/1000 rows; `DIB_Brand` has real values for 245 rows. Phase 2 must resolve brand from `Part_Manuf` or retrieval.
 - **All Phase 1 LOV entries are traceable** to real dataset tokens (verified by pytest).
+
+## 10. Confirmed after Phase 2
+
+- **Retrieval infra built and unit-tested** (14 tests): DuckDuckGo search, MD5-cached fetch, HTML/PDF parse + chunk, FAISS + `all-MiniLM-L6-v2` index. `pytest tests/test_retrieval.py` → 14 passed (13 unit + 1 integration).
+- **Grounded LLM extraction** (`src/extraction/llm_extract.py`) with a mandatory `quoted_span in chunk` check — the LLM must quote the exact evidence span or the result is discarded. Default model `Qwen/Qwen2.5-3B-Instruct`, temperature 0.
+- **Confidence scoring** merges rule + retrieval results into high/low tiers and writes `data/processed/review_queue.json` (6 tests pass).
+- **Grounded generation** (`src/generation/generate_copy.py`) produces SHORT_DESC / LONG_DESC1 / MARKETING_DESCRIPTION from validated facts only; `verify_grounding()` catches unsupported numeric claims (6 tests pass).
+- **Brand waterfall** resolves 100% of focus rows, but appliance rows fall through to `Part_Manuf = "Appliance Dealers Cooperative (APPDE)"` — a co-op code, not a searchable brand. The real brand (GE, LG, KitchenAid, ...) is embedded in `Part_Desc`; extracting it is the first Phase 3 task.
+- **Dev ground truth**: 20 rows (`data/eval/dev_ground_truth.csv`) — 10 abrasives fully rule-filled, 2 original GT dishwasher rows filled, 8 appliance rows pending manual spec lookup.
+- **Not yet measured**: live retrieval accuracy against real manufacturer pages, and the naive-LLM baseline. Both are Phase 3 work.
 
 ---
 

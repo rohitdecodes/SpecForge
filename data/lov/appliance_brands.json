@@ -1,0 +1,33 @@
+{
+  "_note": "Appliance brands mined from Part_Desc text of the 84 APPDE co-op rows (Phase 3 Step 1). The APPDE rows have Part_Manuf = 'Appliance Dealers Cooperative (APPDE)' which is a buying co-op code, NOT a searchable brand. The real brand is embedded in Part_Desc (e.g. 'PDT715SYVFS Ge Dishwasher SS' -> GE). Synonym keys are case-insensitive. Short codes (ge/lg/sq) are matched word-bounded to avoid false hits inside part numbers.",
+  "canonical": [
+    "GE",
+    "LG",
+    "KitchenAid",
+    "Speed Queen",
+    "Cafe",
+    "Frigidaire",
+    "Beko",
+    "Element"
+  ],
+  "synonyms": {
+    "ge": "GE",
+    "lg": "LG",
+    "kitchen aid": "KitchenAid",
+    "speed queen": "Speed Queen",
+    "sq": "Speed Queen",
+    "cafe": "Cafe",
+    "café": "Cafe",
+    "frigidaire": "Frigidaire",
+    "beko": "Beko",
+    "element": "Element"
+  },
+  "unverified_extras": [],
+  "unverified_extras_note": "None. Every synonym above was observed in at least one of the 84 APPDE Part_Desc values.",
+  "traceability": {
+    "verified_by": "manual scan of all 84 APPDE Part_Desc rows (Phase 3 Step 1)",
+    "rows_with_embedded_brand": 64,
+    "rows_without_embedded_brand": 20,
+    "rows_without_note": "20 rows have no brand token in Part_Desc (e.g. 'PDSH4816AF Dishwasher SS - Display Only'). These fall through to Part_Manuf (APPDE) and rely on part-number-only search."
+  }
+}

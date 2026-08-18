@@ -1,7 +1,9 @@
 """Web search — Phase 2 retrieval.
 
-Zero-cost DuckDuckGo HTML search.  Returns candidate URLs ranked by
-relevance (no API key required).
+Zero-cost DuckDuckGo search.  Primary backend is the `duckduckgo_search`
+package (DDGS) which talks to DuckDuckGo's backend API; falls back to the
+DuckDuckGo HTML endpoint (which may be CAPTCHA-gated).  Returns candidate
+URLs ranked by relevance (no API key required).
 """
 from __future__ import annotations
 
@@ -18,16 +20,21 @@ USER_AGENT = (
 )
 
 
-def web_search(query: str, max_results: int = 5) -> list[str]:
-    """Search DuckDuckGo HTML endpoint — returns list of result URLs.
+def _search_ddgs(query: str, max_results: int) -> list[str]:
+    """Search via the duckduckgo_search package (backend API)."""
+    try:
+        from duckduckgo_search import DDGS
 
-    Args:
-        query: The search query string.
-        max_results: Maximum number of URLs to return (default 5).
+        with DDGS() as ddgs:
+            results = list(ddgs.text(query, max_results=max_results))
+        urls = [r.get("href", "") for r in results if r.get("href")]
+        return [u for u in urls if u.startswith("http")][:max_results]
+    except Exception:
+        return []
 
-    Returns:
-        List of URL strings.  Empty list on failure or no results.
-    """
+
+def _search_html(query: str, max_results: int) -> list[str]:
+    """Search DuckDuckGo HTML endpoint — returns list of result URLs."""
     url = "https://html.duckduckgo.com/html/"
     params = {"q": query}
     headers = {"User-Agent": USER_AGENT}
@@ -58,6 +65,24 @@ def web_search(query: str, max_results: int = 5) -> list[str]:
                 break
 
     return urls[:max_results]
+
+
+def web_search(query: str, max_results: int = 5) -> list[str]:
+    """Search DuckDuckGo — returns list of result URLs.
+
+    Tries the `duckduckgo_search` package first, then the HTML endpoint.
+
+    Args:
+        query: The search query string.
+        max_results: Maximum number of URLs to return (default 5).
+
+    Returns:
+        List of URL strings.  Empty list on failure or no results.
+    """
+    urls = _search_ddgs(query, max_results)
+    if urls:
+        return urls
+    return _search_html(query, max_results)
 
 
 def search_for_product(

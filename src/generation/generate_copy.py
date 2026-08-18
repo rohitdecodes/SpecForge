@@ -1,8 +1,13 @@
-"""Grounded LLM text generation — Phase 2.
+"""Grounded LLM text generation — Phase 2 + Phase 3.
 
 Generates product title / short description / long description / marketing
 copy from validated facts only.  The LLM may only reformulate known-good
 facts; it must not invent new claims.
+
+Phase 3 change: loads the LLM via :mod:`src.llm.model` (Qwen2.5-3B-Instruct by
+default). Previously this module loaded ``microsoft/Phi-4-mini-instruct`` with
+``trust_remote_code=True``, which broke under transformers 5.5.4 — see the
+note in ``src/llm/model.py``.
 """
 from __future__ import annotations
 
@@ -10,7 +15,7 @@ import json
 import re
 from typing import Optional
 
-_LLM = None
+from src.llm.model import load_llm, generate as llm_generate
 
 
 SHORT_DESC_PROMPT = """Write a product short description using ONLY these validated facts.
@@ -41,32 +46,6 @@ Rules:
 """
 
 
-def _get_llm():
-    global _LLM
-    if _LLM is not None:
-        return _LLM
-    try:
-        from transformers import pipeline
-        _LLM = pipeline(
-            "text-generation",
-            model="microsoft/Phi-4-mini-instruct",
-            trust_remote_code=True,
-            max_new_tokens=512,
-        )
-        return _LLM
-    except Exception:
-        try:
-            from transformers import pipeline
-            _LLM = pipeline(
-                "text-generation",
-                model="TinyLlama/TinyLlama-1.1B-Chat-v1.0",
-                max_new_tokens=512,
-            )
-            return _LLM
-        except Exception:
-            return None
-
-
 def _format_facts(scored_fields: dict[str, dict]) -> str:
     """Build a compact JSON of known-high-confidence facts for the prompt."""
     facts: dict[str, str] = {}
@@ -77,25 +56,17 @@ def _format_facts(scored_fields: dict[str, dict]) -> str:
 
 
 def _run_generation(prompt_template: str, facts_json: str, max_length: int = 512) -> str:
-    model = _get_llm()
-    if model is None:
+    tokenizer, model = load_llm()
+    if tokenizer is None or model is None:
         return ""
     prompt = prompt_template.format(facts_json=facts_json)
-    try:
-        result = model(
-            prompt,
-            max_new_tokens=max_length,
-            do_sample=True,
-            temperature=0.3,
-        )
-        raw = result[0]["generated_text"] if isinstance(result, list) else str(result)
-    except Exception:
-        return ""
-    # Strip the prompt from output
-    idx = raw.find(prompt)
-    if idx >= 0:
-        raw = raw[idx + len(prompt):]
-    return raw.strip()
+    return llm_generate(
+        prompt,
+        tokenizer=tokenizer,
+        model=model,
+        temperature=0.3,
+        max_new_tokens=max_length,
+    )
 
 
 def generate_copy(scored_fields: dict[str, dict]) -> dict[str, str]:
