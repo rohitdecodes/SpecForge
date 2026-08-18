@@ -107,20 +107,27 @@ Measured against the provided 200-item ground truth:
 
 ```
 .
-├── data/                  # provided 200-item dataset (input + delivery format)
+├── data/
+│   ├── raw/               # 1000 input rows, 2 ground-truth delivery rows
+│   ├── lov/               # LOV/unit JSON files (Phase 1)
+│   ├── processed/         # field_inventory.md (Phase 1)
+│   ├── eval/              # dev ground truth (Phase 2)
+│   └── cache/             # fetched web pages, gitignored (Phase 2)
 ├── src/
-│   ├── extraction/        # regex + NER rules
-│   ├── retrieval/         # scraping, embedding, FAISS index
-│   ├── normalization/     # LOV + unit mapping
-│   ├── confidence/        # scoring + review-flag logic
-│   ├── generation/        # LLM prompts for title/description
-│   └── pipeline.py        # orchestrates the cascade end-to-end
-├── review/                 # HITL interface (Streamlit or CSV-based)
-├── eval/                   # metrics scripts, baseline comparison
+│   ├── extraction/        # regex + NER rules (Phase 1) + llm_extract (Phase 2)
+│   ├── retrieval/         # search, fetch, parse, index (Phase 2)
+│   ├── normalization/     # LOV + unit mapping (Phase 1)
+│   ├── brand/             # brand resolution waterfall (Phase 2)
+│   ├── confidence/        # scoring + review-flag logic (Phase 2)
+│   ├── generation/        # LLM title/description generation (Phase 2)
+│   └── pipeline.py        # orchestrates the cascade end-to-end (Phase 2)
+├── tests/                 # pytest test files
+├── scripts/               # build_lov.py, smoke_rules.py
 ├── docs/
 │   ├── PHASE_1.md
 │   ├── PHASE_2.md
-│   └── PHASE_3.md
+│   ├── PHASE_1_SUMMARY.md
+│   └── PHASE_2_SUMMARY.md
 ├── requirements.txt
 └── README.md
 ```
@@ -153,17 +160,19 @@ Built in three phases, each with its own detailed step-by-step plan (`docs/PHASE
 
 | Phase | Goal | Status |
 |---|---|---|
-| **Phase 1 — Foundation** | Data audit, deterministic extraction layer, LOV/unit tables for the target category | Not started |
-| **Phase 2 — Grounding** | Evidence retrieval, LLM integration (extraction fallback + generation), confidence scoring | Not started |
+| **Phase 1 — Foundation** | Data audit, deterministic extraction layer, LOV/unit tables for the target category | ✅ Complete — 27 tests pass, summary at `docs/PHASE_1_SUMMARY.md` |
+| **Phase 2 — Grounding** | Evidence retrieval, LLM integration (extraction fallback + generation), confidence scoring | 🔨 In progress — see `docs/PHASE_2.md` |
 | **Phase 3 — Trust & polish** | Human review interface, evaluation harness, baseline comparison, demo prep | Not started |
 
 *(Detailed plan for the active phase lives in `docs/PHASE_N.md`.)*
 
-## 9. Open items to confirm before Phase 1 starts
+## 9. Confirmed after Phase 1
 
-- **Target category focus** — which category in the actual 200-item dataset we go deep on (determined during the data audit, not assumed in advance)
-- Project name and repo link
-- Whether a free GPU (Colab) is available, which affects which LLM tier we default to
+- **Real dataset**: 1000 input rows, only 2 ground-truth delivery rows (both dishwashers). Phase 2 hand-curates a 20-row dev ground truth.
+- **Deep-focus categories**: **Abrasives / Cut-Off Discs** (108 rows, mfr Milwaukee Accessory) and **Appliances** (84 rows, mfr APPDE co-op). Lighting (167 rows) and Decking (55 rows) are present but not in deep focus.
+- **Rule-layer resolves 16 attributes** at rates from 73.7% (`part_number_echo`) down to 0% (`sound_level`). Deterministic 0% coverage on: Mounting Type, Voltage Rating, Amperage Rating, Size, Sound Level — these must come from Phase 2 retrieval.
+- **`E1_Brand` is `-- Unbranded --`** in 799/1000 rows; `DIB_Brand` has real values for 245 rows. Phase 2 must resolve brand from `Part_Manuf` or retrieval.
+- **All Phase 1 LOV entries are traceable** to real dataset tokens (verified by pytest).
 
 ---
 
