@@ -1,0 +1,556 @@
+{
+  "generated_by": "src/confidence/scoring.py",
+  "record_count": 5,
+  "records": [
+    {
+      "part_number": "KDFM404KPS",
+      "fields": {
+        "amperage": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "arbor": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "bundle_count": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "color_temperature": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "diameter": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "display_flag": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "finish_color": {
+          "value": "Stainless Steel",
+          "confidence": "high",
+          "source": "rule:extract_finish_color",
+          "needs_review": false
+        },
+        "grit": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "length": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "material": {
+          "value": "Stainless Steel",
+          "confidence": "high",
+          "source": "rule:extract_material",
+          "needs_review": false
+        },
+        "part_number_echo": {
+          "value": "KDFM404KPS",
+          "confidence": "high",
+          "source": "rule:extract_part_number_echo",
+          "needs_review": false
+        },
+        "product_type": {
+          "value": "Dishwasher",
+          "confidence": "high",
+          "source": "rule:extract_product_type",
+          "needs_review": false
+        },
+        "sound_level": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "thickness": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "voltage": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "wattage": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        }
+      },
+      "needs_review": true,
+      "summary": {
+        "total_fields": 16,
+        "high_confidence": 4,
+        "low_confidence": 12,
+        "coverage_pct": 25.0
+      },
+      "brand": "Appliance Dealers Cooperative (APPDE)",
+      "brand_source": "manuf"
+    },
+    {
+      "part_number": "PDSH4816AF",
+      "fields": {
+        "amperage": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "arbor": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "bundle_count": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "color_temperature": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "diameter": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "display_flag": {
+          "value": true,
+          "confidence": "high",
+          "source": "rule:extract_display_flag",
+          "needs_review": false
+        },
+        "finish_color": {
+          "value": "Stainless Steel",
+          "confidence": "high",
+          "source": "rule:extract_finish_color",
+          "needs_review": false
+        },
+        "grit": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "length": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "material": {
+          "value": "Stainless Steel",
+          "confidence": "high",
+          "source": "rule:extract_material",
+          "needs_review": false
+        },
+        "part_number_echo": {
+          "value": "PDSH4816AF",
+          "confidence": "high",
+          "source": "rule:extract_part_number_echo",
+          "needs_review": false
+        },
+        "product_type": {
+          "value": "Dishwasher",
+          "confidence": "high",
+          "source": "rule:extract_product_type",
+          "needs_review": false
+        },
+        "sound_level": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "thickness": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "voltage": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "wattage": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        }
+      },
+      "needs_review": true,
+      "summary": {
+        "total_fields": 16,
+        "high_confidence": 5,
+        "low_confidence": 11,
+        "coverage_pct": 31.2
+      },
+      "brand": "Appliance Dealers Cooperative (APPDE)",
+      "brand_source": "manuf"
+    },
+    {
+      "part_number": "PDT715SYVFS",
+      "fields": {
+        "amperage": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "arbor": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "bundle_count": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "color_temperature": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "diameter": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "display_flag": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "finish_color": {
+          "value": "Stainless Steel",
+          "confidence": "high",
+          "source": "rule:extract_finish_color",
+          "needs_review": false
+        },
+        "grit": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "length": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "material": {
+          "value": "Stainless Steel",
+          "confidence": "high",
+          "source": "rule:extract_material",
+          "needs_review": false
+        },
+        "part_number_echo": {
+          "value": "PDT715SYVFS",
+          "confidence": "high",
+          "source": "rule:extract_part_number_echo",
+          "needs_review": false
+        },
+        "product_type": {
+          "value": "Dishwasher",
+          "confidence": "high",
+          "source": "rule:extract_product_type",
+          "needs_review": false
+        },
+        "sound_level": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "thickness": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "voltage": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "wattage": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        }
+      },
+      "needs_review": true,
+      "summary": {
+        "total_fields": 16,
+        "high_confidence": 4,
+        "low_confidence": 12,
+        "coverage_pct": 25.0
+      },
+      "brand": "Appliance Dealers Cooperative (APPDE)",
+      "brand_source": "manuf"
+    },
+    {
+      "part_number": "LDPH5554D",
+      "fields": {
+        "amperage": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "arbor": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "bundle_count": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "color_temperature": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "diameter": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "display_flag": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "finish_color": {
+          "value": "Stainless Steel",
+          "confidence": "high",
+          "source": "rule:extract_finish_color",
+          "needs_review": false
+        },
+        "grit": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "length": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "material": {
+          "value": "Stainless Steel",
+          "confidence": "high",
+          "source": "rule:extract_material",
+          "needs_review": false
+        },
+        "part_number_echo": {
+          "value": "LDPH5554D",
+          "confidence": "high",
+          "source": "rule:extract_part_number_echo",
+          "needs_review": false
+        },
+        "product_type": {
+          "value": "Dishwasher",
+          "confidence": "high",
+          "source": "rule:extract_product_type",
+          "needs_review": false
+        },
+        "sound_level": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "thickness": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "voltage": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "wattage": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        }
+      },
+      "needs_review": true,
+      "summary": {
+        "total_fields": 16,
+        "high_confidence": 4,
+        "low_confidence": 12,
+        "coverage_pct": 25.0
+      },
+      "brand": "Appliance Dealers Cooperative (APPDE)",
+      "brand_source": "manuf"
+    },
+    {
+      "part_number": "WDTS7024RZ",
+      "fields": {
+        "amperage": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "arbor": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "bundle_count": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "color_temperature": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "diameter": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "display_flag": {
+          "value": true,
+          "confidence": "high",
+          "source": "rule:extract_display_flag",
+          "needs_review": false
+        },
+        "finish_color": {
+          "value": "Stainless Steel",
+          "confidence": "high",
+          "source": "rule:extract_finish_color",
+          "needs_review": false
+        },
+        "grit": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "length": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "material": {
+          "value": "Stainless Steel",
+          "confidence": "high",
+          "source": "rule:extract_material",
+          "needs_review": false
+        },
+        "part_number_echo": {
+          "value": "WDTS7024RZ",
+          "confidence": "high",
+          "source": "rule:extract_part_number_echo",
+          "needs_review": false
+        },
+        "product_type": {
+          "value": "Dishwasher",
+          "confidence": "high",
+          "source": "rule:extract_product_type",
+          "needs_review": false
+        },
+        "sound_level": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "thickness": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "voltage": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        },
+        "wattage": {
+          "value": null,
+          "confidence": "low",
+          "source": "none",
+          "needs_review": true
+        }
+      },
+      "needs_review": true,
+      "summary": {
+        "total_fields": 16,
+        "high_confidence": 5,
+        "low_confidence": 11,
+        "coverage_pct": 31.2
+      },
+      "brand": "Appliance Dealers Cooperative (APPDE)",
+      "brand_source": "manuf"
+    }
+  ]
+}
