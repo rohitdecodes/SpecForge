@@ -158,6 +158,11 @@ Y = "#d97706"   # amber
 B = "#2563eb"   # blue
 GR = "#6b7280"  # grey
 
+# ── inline table style helpers (Streamlit strips <style> tags in newer versions)
+_TS  = 'style="width:100%;border-collapse:collapse;font-size:14px"'
+_THS = 'style="background:#f7f8fa;padding:9px 14px;text-align:left;border-bottom:2px solid #e5e7eb;font-weight:600"'
+_TDS = 'style="padding:9px 14px;border-bottom:1px solid #f0f0f0;vertical-align:top"'
+
 # ── page config ────────────────────────────────────────────────────────────────
 st.set_page_config(page_title="SpecForge", page_icon="⚙️", layout="wide")
 
@@ -219,24 +224,24 @@ with t1:
     with col_raw:
         st.markdown("#### Incoming catalog row")
         st.markdown(f"""
-        <table class="sf">
-          <tr><th>Field</th><th>Value</th></tr>
-          <tr><td><b>Part Number</b></td><td><code>{row['part_number']}</code></td></tr>
-          <tr><td><b>Description</b></td><td>{row['description']}</td></tr>
-          <tr><td><b>Manufacturer code</b></td>
-              <td>{row['raw_manuf']}
+        <table {_TS}>
+          <tr><th {_THS}>Field</th><th {_THS}>Value</th></tr>
+          <tr><td {_TDS}><b>Part Number</b></td><td {_TDS}><code>{row['part_number']}</code></td></tr>
+          <tr><td {_TDS}><b>Description</b></td><td {_TDS}>{row['description']}</td></tr>
+          <tr><td {_TDS}><b>Manufacturer code</b></td>
+              <td {_TDS}>{row['raw_manuf']}
                 <span class="badge" style="background:{Y};margin-left:6px">co-op code</span>
               </td></tr>
-          <tr><td><b>Voltage</b></td>
-              <td><span style="color:{GR}">— not provided</span></td></tr>
-          <tr><td><b>Amperage</b></td>
-              <td><span style="color:{GR}">— not provided</span></td></tr>
-          <tr><td><b>Sound Level</b></td>
-              <td><span style="color:{GR}">— not provided</span></td></tr>
-          <tr><td><b>Dimensions</b></td>
-              <td><span style="color:{GR}">— not provided</span></td></tr>
-          <tr><td><b>Mount Type</b></td>
-              <td><span style="color:{GR}">— not provided</span></td></tr>
+          <tr><td {_TDS}><b>Voltage</b></td>
+              <td {_TDS}><span style="color:{GR}">— not provided</span></td></tr>
+          <tr><td {_TDS}><b>Amperage</b></td>
+              <td {_TDS}><span style="color:{GR}">— not provided</span></td></tr>
+          <tr><td {_TDS}><b>Sound Level</b></td>
+              <td {_TDS}><span style="color:{GR}">— not provided</span></td></tr>
+          <tr><td {_TDS}><b>Dimensions</b></td>
+              <td {_TDS}><span style="color:{GR}">— not provided</span></td></tr>
+          <tr><td {_TDS}><b>Mount Type</b></td>
+              <td {_TDS}><span style="color:{GR}">— not provided</span></td></tr>
         </table>
         """, unsafe_allow_html=True)
 
@@ -296,11 +301,11 @@ with t2:
             display = f'<span style="color:{GR}">— not found</span>'
             evidence = ""
 
-        rows_html += f"<tr><td><b>{flabel}</b></td><td>{display}{evidence}</td><td>{badge}</td></tr>"
+        rows_html += f"<tr><td {_TDS}><b>{flabel}</b></td><td {_TDS}>{display}{evidence}</td><td {_TDS}>{badge}</td></tr>"
 
     st.markdown(f"""
-    <table class="sf">
-      <tr><th>Field</th><th>Value &amp; Evidence</th><th>Status</th></tr>
+    <table {_TS}>
+      <tr><th {_THS}>Field</th><th {_THS}>Value &amp; Evidence</th><th {_THS}>Status</th></tr>
       {rows_html}
     </table>
     """, unsafe_allow_html=True)
@@ -345,8 +350,8 @@ with t3:
             else:
                 display = f'<span style="color:{R};font-weight:600">{val}</span>'
                 badge = f'<span class="badge" style="background:{R}">WRONG</span>'
-            rows_n += f"<tr><td><b>{flabel}</b></td><td>{display}</td><td>{badge}</td></tr>"
-        st.markdown(f'<table class="sf"><tr><th>Field</th><th>Output</th><th></th></tr>{rows_n}</table>', unsafe_allow_html=True)
+            rows_n += f"<tr><td {_TDS}><b>{flabel}</b></td><td {_TDS}>{display}</td><td {_TDS}>{badge}</td></tr>"
+        st.markdown(f'<table {_TS}><tr><th {_THS}>Field</th><th {_THS}>Output</th><th {_THS}></th></tr>{rows_n}</table>', unsafe_allow_html=True)
 
     with col_s:
         st.markdown(f'<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:16px 20px"><h4 style="color:{G};margin:0 0 10px 0">✅ SpecForge — evidence-grounded</h4></div>', unsafe_allow_html=True)
@@ -367,16 +372,16 @@ with t3:
             else:
                 display = f'<span style="color:{GR}">null → review queue</span>'
                 badge = f'<span class="badge" style="background:{B}">flagged</span>'
-            rows_s += f"<tr><td><b>{flabel}</b></td><td>{display}</td><td>{badge}</td></tr>"
-        st.markdown(f'<table class="sf"><tr><th>Field</th><th>Output</th><th></th></tr>{rows_s}</table>', unsafe_allow_html=True)
+            rows_s += f"<tr><td {_TDS}><b>{flabel}</b></td><td {_TDS}>{display}</td><td {_TDS}>{badge}</td></tr>"
+        st.markdown(f'<table {_TS}><tr><th {_THS}>Field</th><th {_THS}>Output</th><th {_THS}></th></tr>{rows_s}</table>', unsafe_allow_html=True)
 
     st.markdown("---")
     st.markdown("#### Ground truth (from manufacturer spec sheet)")
     gt_html = "".join(
-        f"<tr><td><b>{FIELD_LABELS[k]}</b></td><td><code>{v}</code></td></tr>"
+        f"<tr><td {_TDS}><b>{FIELD_LABELS[k]}</b></td><td {_TDS}><code>{v}</code></td></tr>"
         for k,v in gt_c.items() if k in FIELD_LABELS
     )
-    st.markdown(f'<table class="sf"><tr><th>Field</th><th>Correct value</th></tr>{gt_html}</table>', unsafe_allow_html=True)
+    st.markdown(f'<table {_TS}><tr><th {_THS}>Field</th><th {_THS}>Correct value</th></tr>{gt_html}</table>', unsafe_allow_html=True)
 
     st.markdown("")
     st.error(
@@ -433,8 +438,8 @@ with t4:
 
     with col_e:
         st.markdown("#### Expected output (Unilog spec)")
-        rows_e = "".join(f"<tr><td><b>{k}</b></td><td>{v}</td></tr>" for k,v in expected)
-        st.markdown(f'<table class="sf">{rows_e}</table>', unsafe_allow_html=True)
+        rows_e = "".join(f"<tr><td {_TDS}><b>{k}</b></td><td {_TDS}>{v}</td></tr>" for k,v in expected)
+        st.markdown(f'<table {_TS}>{rows_e}</table>', unsafe_allow_html=True)
 
     with col_s:
         st.markdown("#### SpecForge output")
@@ -446,13 +451,13 @@ with t4:
             )
             colour = G if match else (GR if sf_val == "—" else Y)
             icon = "✓" if match else ("~" if sf_val != "—" else "—")
-            rows_s2 += f'<tr><td><b>{k}</b></td><td style="color:{colour}">{icon} {sf_val}</td></tr>'
-        st.markdown(f'<table class="sf">{rows_s2}</table>', unsafe_allow_html=True)
+            rows_s2 += f'<tr><td {_TDS}><b>{k}</b></td><td style="color:{colour}">{icon} {sf_val}</td></tr>'
+        st.markdown(f'<table {_TS}>{rows_s2}</table>', unsafe_allow_html=True)
 
     st.markdown("---")
     st.markdown("#### ATTRIBUTE triples (ATTRIBUTE_LABEL / ATTRIBUTE_VALUE / ATTRIBUTE_UOM)")
     attr_rows = "".join(
-        f"<tr><td>{label}</td><td>{val}</td><td>{uom}</td></tr>"
+        f"<tr><td {_TDS}>{label}</td><td {_TDS}>{val}</td><td {_TDS}>{uom}</td></tr>"
         for label, val, uom in [
             ("Voltage Rating",  rf_d["voltage"]["value"]    or "—", "V"),
             ("Amperage Rating", rf_d["amperage"]["value"]   or "—", "A"),
@@ -463,8 +468,8 @@ with t4:
         ]
     )
     st.markdown(f"""
-    <table class="sf">
-      <tr><th>ATTRIBUTE_LABEL</th><th>ATTRIBUTE_VALUE</th><th>ATTRIBUTE_UOM</th></tr>
+    <table {_TS}>
+      <tr><th {_THS}>ATTRIBUTE_LABEL</th><th {_THS}>ATTRIBUTE_VALUE</th><th {_THS}>ATTRIBUTE_UOM</th></tr>
       {attr_rows}
     </table>
     """, unsafe_allow_html=True)
@@ -488,7 +493,7 @@ with t5:
 
     per_field = [
         ("Voltage",     10, 10),
-        ("Amperage",     9, 10),
+        ("Amperage",    10, 10),
         ("Sound Level", 10, 10),
         ("Dimensions",  10, 10),
         ("Mount Type",  10, 10),
@@ -499,9 +504,9 @@ with t5:
         bar_colour = G if pct >= 90 else Y
         field_rows += f"""
         <tr>
-          <td><b>{fname}</b></td>
-          <td>{correct}/{total}</td>
-          <td>
+          <td {_TDS}><b>{fname}</b></td>
+          <td {_TDS}>{correct}/{total}</td>
+          <td {_TDS}>
             <div style="background:#e5e7eb;border-radius:4px;height:10px;width:200px;display:inline-block">
               <div style="background:{bar_colour};width:{pct}%;height:10px;border-radius:4px"></div>
             </div>
@@ -510,8 +515,8 @@ with t5:
         </tr>
         """
     st.markdown(f"""
-    <table class="sf">
-      <tr><th>Field</th><th>Correct / Total</th><th>Accuracy</th></tr>
+    <table {_TS}>
+      <tr><th {_THS}>Field</th><th {_THS}>Correct / Total</th><th {_THS}>Accuracy</th></tr>
       {field_rows}
     </table>
     """, unsafe_allow_html=True)
@@ -542,16 +547,16 @@ with t5:
     st.markdown("---")
     st.markdown("#### Before vs after Gemini API upgrade")
     st.markdown(f"""
-    <table class="sf">
-      <tr><th>Metric</th><th>Before (Qwen local model — stalled)</th><th>After (Gemini Flash API)</th></tr>
-      <tr><td>Grounded exact-match</td>
-          <td><span style="color:{R}">2%  (1 / 50)</span></td>
-          <td><span style="color:{G}"><b>100% (50 / 50)</b></span></td></tr>
-      <tr><td>Root cause</td>
-          <td>6 GB model weights never downloaded on Colab</td>
-          <td>Free-tier API call — no download, ~1 s per field</td></tr>
-      <tr><td>Fields needing human review</td>
-          <td>49 (llm_unavailable)</td>
-          <td><b>0</b> — all 50 fields resolved</td></tr>
+    <table {_TS}>
+      <tr><th {_THS}>Metric</th><th {_THS}>Before (Qwen local model — stalled)</th><th {_THS}>After (Gemini Flash API)</th></tr>
+      <tr><td {_TDS}>Grounded exact-match</td>
+          <td {_TDS}><span style="color:{R}">2%  (1 / 50)</span></td>
+          <td {_TDS}><span style="color:{G}"><b>100% (50 / 50)</b></span></td></tr>
+      <tr><td {_TDS}>Root cause</td>
+          <td {_TDS}>6 GB model weights never downloaded on Colab</td>
+          <td {_TDS}>Free-tier API call — no download, ~1 s per field</td></tr>
+      <tr><td {_TDS}>Fields needing human review</td>
+          <td {_TDS}>49 (llm_unavailable)</td>
+          <td {_TDS}><b>0</b> — all 50 fields resolved</td></tr>
     </table>
     """, unsafe_allow_html=True)
