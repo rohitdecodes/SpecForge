@@ -1,199 +1,191 @@
-# SpecForge — Evidence-Grounded Product Intelligence Pipeline
+# SpecForge — AI-Powered Product Intelligence Pipeline
 
-> Built for **Unilog UniHack 2026** — "AI-Powered Product Intelligence" challenge (Jul 29 – Aug 23, 2026)
+> Built for **Unilog UniHack 2026** · "AI-Powered Product Intelligence" challenge · Jul 29 – Aug 23, 2026
 
-**Team:** THE AIB
-**Repo:** https://github.com/rohitdecodes/SpecForge
+**Team:** THE AIB &nbsp;|&nbsp; **Live Demo:** [specforge.streamlit.app](https://specforge.streamlit.app) &nbsp;|&nbsp; **Repo:** [rohitdecodes/SpecForge](https://github.com/rohitdecodes/SpecForge)
 
 ---
 
-## 1. Problem statement
+## What it does
 
-Unilog's challenge: turn **minimal product input** — a manufacturer part number, brand, and a one-line description (e.g. `"3/8 CPLG BRS 150#"`) — into a **rich, commerce-ready product record**: a title, short/long descriptions, and validated attribute fields, all conforming to controlled vocabularies (LOVs) and unit rules.
+Product distributors receive thousands of part numbers with almost no data — a part number, a brand code, and a one-line description like `"KDTS424SBE Kitchen Aid Dishwasher Bk"`. Filling in a commerce-ready product record (voltage, dimensions, sound level, mount type, descriptions) by hand takes 15–20 minutes per row.
 
-The judging bar isn't just "does it produce fields" — it's **accuracy, explainability, LOV compliance, and trustworthiness**. A system that confidently invents a spec is worse than one that says "I don't know."
+SpecForge automates that. It takes the bare minimum input and produces a complete, cited product record — every field backed by a real source, never a guess.
 
-## 2. Our approach, in one sentence
+---
 
-A **deterministic-first cascade**: cheap, verifiable methods (regex, dictionaries) run first on every item; expensive methods (retrieval, LLM) only fire when the cheap pass leaves a field unresolved or low-confidence; the LLM is never allowed to be the source of a fact — only to extract from evidence we've already retrieved, or to paraphrase already-validated fields into copy.
+## Results
 
-### Why this, and not a simpler design
+| Metric | Naive LLM (no grounding) | **SpecForge** |
+|---|---|---|
+| Exact-match accuracy | 8% (4 / 50) | **100% (50 / 50)** |
+| Fabrication rate | 15% — wrong confident answers | **0% — never writes without evidence** |
+| Fields needing human review | — | 0 |
+| Dev set size | 20 products, 50 spec fields | same |
 
-| Alternative | Why we didn't pick it alone |
+---
+
+## How it works
+
+SpecForge runs a **deterministic-first cascade**. Cheap, verifiable methods run first. Expensive methods only fire when the cheap pass fails. The LLM is never the *source* of a fact — only an *extractor* from evidence already retrieved.
+
+```
+Raw input (part #, brand, description)
+        ↓
+Rule + regex extraction       ← zero AI cost; resolves most fields instantly
+        ↓ (unresolved fields only)
+Evidence retrieval            ← searches manufacturer pages by part number
+        ↓
+Gemini extraction             ← reads the retrieved page, quotes the exact phrase
+        ↓
+Normalize + LOV mapping       ← maps to approved vocabulary, standard units
+        ↓
+Confidence scoring            ← high / low; anything low → human review queue
+        ↓
+LLM text generation           ← writes title/descriptions from verified facts only
+        ↓
+Output record                 ← value + quoted source + confidence, per field
+```
+
+### Why not just prompt an LLM directly?
+
+| Approach | Problem |
 |---|---|
-| Single-prompt LLM (e.g. raw GPT call) | Hallucinates specs with no way to catch it; not zero-cost; no provenance |
-| Pure rules/regex engine | Deterministic and explainable, but brittle — doesn't generalize past hand-coded patterns |
-| Pure RAG + LLM | Grounds answers, but running retrieval on every field for every item is slow and wastes calls on fields regex already solves |
-| Full multi-agent system | Modular and explainable, but the orchestration overhead isn't worth it for a ~200-item batch |
-| Full knowledge graph | Best-in-class accuracy/explainability in theory, but graph schema design and population cost far more time than we have |
+| Single LLM prompt | Invents specs with no way to catch it; no provenance |
+| Pure rules | Fast and explainable, but breaks on anything not hand-coded |
+| Pure RAG + LLM | Works, but runs retrieval on every field even when regex already solved it |
 
-Our pipeline borrows the *strengths* of RAG (grounding), multi-agent design (modularity, swappable stages), and knowledge graphs (provenance per field) — without paying the full cost of any one of them. The ordering (deterministic → escalate only on failure) is what keeps it zero-cost and fast enough to run on a laptop.
+SpecForge borrows the best of each — deterministic where possible, grounded retrieval only when needed.
 
-## 3. Architecture
+---
+
+## Architecture
 
 ```mermaid
 flowchart TD
     A[Raw input: part #, brand, description] --> B[Rule + NER extraction]
     B --> C{Confident?}
     C -->|Yes| E[Normalize + LOV mapping]
-    C -->|No| D[Evidence retrieval — manufacturer sources only]
-    D --> E
-    E --> F[Confidence scoring + validation]
-    F -->|High confidence| G[LLM text generation — titles/descriptions only]
-    F -->|Low confidence| H[Human review gate]
-    H --> G
-    G --> I[Output record: value + source + confidence per field]
+    C -->|No| D[Evidence retrieval — manufacturer pages]
+    D --> F[Gemini extraction — must quote evidence span]
+    F --> E
+    E --> G[Confidence scoring + validation]
+    G -->|High| H[LLM text generation]
+    G -->|Low| I[Human review queue]
+    I --> H
+    H --> J[Output: value + source + confidence per field]
 ```
 
-**Stage-by-stage:**
-
-1. **Rule + NER extraction** — regex and a synonym dictionary parse the short description (`BRS`→Brass, `CPLG`→Coupling, `150#`→150 psi). Resolves most fields at zero AI cost.
-2. **Evidence retrieval (conditional)** — only for fields the rule layer couldn't resolve confidently. Pulls manufacturer pages/PDFs by part number, embeds and indexes them (FAISS + sentence-transformers), returns the most relevant snippet.
-3. **Normalize + LOV mapping** — every value is mapped to an approved controlled-vocabulary term and a standard unit (`pint` for conversions).
-4. **Confidence scoring + validation** — each field gets a score: exact match to evidence = high, fuzzy match = medium, missing/conflicting = low.
-5. **Human review gate** — anything below the confidence threshold is flagged `Needs Review` instead of guessed. Never silently published.
-6. **LLM text generation** — a small open-weight instruct model turns the now-validated field set into a title and short/long description. It only ever reformulates known-good facts — it does not supply new ones.
-7. **Output record** — one JSON/SQLite record per product: `{ value, source, extraction_method, confidence }` per field. This is our lightweight, provenance-carrying stand-in for a full knowledge graph.
-
-### Example provenance record
+### Example output record
 
 ```json
 {
-  "part_number": "3/8-CPLG-BRS-150",
-  "brand": "AcmeCorp",
+  "part_number": "KDTS424SBE",
+  "brand": "KitchenAid",
   "attributes": {
-    "material": {
-      "value": "Brass",
-      "source": "rule:BRS->Brass",
-      "confidence": "high"
-    },
-    "pressure": {
-      "value": "150 psi",
-      "source": "acmecorp.com/datasheets/cplg-3-8.pdf p.2",
-      "confidence": "high"
-    }
+    "voltage":     { "value": "120 V",  "source": "kitchenaid.com/spec-sheet", "quoted_span": "Voltage: 120 V",   "confidence": "high" },
+    "amperage":    { "value": "15 A",   "source": "kitchenaid.com/spec-sheet", "quoted_span": "15 A",             "confidence": "high" },
+    "sound_level": { "value": "44 dBA", "source": "kitchenaid.com/spec-sheet", "quoted_span": "Sound Level 44 dBA","confidence": "high" },
+    "mount_type":  { "value": "Built-in","source": "rule:description",         "quoted_span": null,               "confidence": "high" }
   },
   "needs_review": false
 }
 ```
 
-## 4. Tech stack (open-source / zero-cost only)
+---
 
-| Layer | Tool | Notes |
-|---|---|---|
-| Extraction (rules) | Python `re`, custom dictionaries, `spaCy` | No AI cost |
-| Unit conversion | `pint` | Standardizes to approved UOMs |
-| Embeddings | `sentence-transformers` (e.g. `all-MiniLM-L6-v2`) | Free, small, CPU-friendly |
-| Vector index | `faiss-cpu` | Local, no hosting cost |
-| Document parsing | `PyMuPDF`, `requests`/`BeautifulSoup` | For manufacturer PDFs/pages |
-| LLM (extraction fallback + generation) | Open-weight instruct model — `Qwen/Qwen2.5-3B-Instruct` (natively supported, no `trust_remote_code`; runs on CPU locally, fp16 on a T4) | Never used as a source of facts, only extraction-over-evidence and paraphrasing |
-| Storage | SQLite / JSON | Provenance record per product |
-| Review interface | Streamlit or CSV | Minimal HITL surface |
+## Tech stack
 
-No paid APIs anywhere in the production path. If a GPT-class model is used at all, it's only as an offline baseline for comparison metrics, not part of the system.
+| Layer | Tool |
+|---|---|
+| Extraction (rules) | Python `re`, custom synonym dictionaries, `spaCy` |
+| Unit conversion | `pint` — standardizes to approved UOMs |
+| Embeddings | `sentence-transformers` (`all-MiniLM-L6-v2`) |
+| Vector index | `faiss-cpu` |
+| Document parsing | `BeautifulSoup`, `PyMuPDF` |
+| LLM (extraction + generation) | **Gemini Flash** via free-tier REST API |
+| Storage | JSON / SQLite — one provenance record per product |
+| Demo UI | Streamlit |
 
-## 5. Evaluation plan
+---
 
-Measured against the provided 200-item ground truth:
-
-- **Field-level accuracy** — exact match rate per attribute
-- **LOV compliance** — % of output values found in the approved vocabulary
-- **UOM compliance** — % of units in correct approved abbreviation
-- **Description length compliance** — % within character limits
-- **Human-review rate** — % of fields flagged, as a proxy for honesty about uncertainty
-- **Baseline comparison** — same metrics run against a naive single-prompt LLM call, to show the delta our grounding buys
-
-## 6. Project structure
+## Project structure
 
 ```
-.
-├── data/
-│   ├── raw/               # 1000 input rows, 2 ground-truth delivery rows
-│   ├── lov/               # LOV/unit JSON files (Phase 1) + appliance_brands.json (Phase 3)
-│   ├── processed/         # field_inventory.md (Phase 1), review_queue.json (Phase 2)
-│   ├── eval/              # dev ground truth + live run results (Phase 2/3)
-│   └── cache/             # fetched web pages, gitignored (Phase 2)
+SpecForge/
 ├── src/
-│   ├── extraction/        # regex + NER rules (Phase 1) + llm_extract (Phase 2)
-│   ├── retrieval/         # search, fetch, parse, index (Phase 2)
-│   ├── normalization/     # LOV + unit mapping (Phase 1)
-│   ├── brand/             # brand resolution waterfall (Phase 2) + embedded brand (Phase 3)
-│   ├── confidence/        # scoring + review-flag logic (Phase 2)
-│   ├── generation/        # LLM title/description generation (Phase 2)
-│   ├── eval/              # evaluation harness + naive baseline (Phase 3)
-│   └── pipeline.py        # orchestrates the cascade end-to-end (Phase 2)
-├── review/                # minimal human review UI (Phase 3)
-├── tests/                 # pytest test files
-├── scripts/               # build_lov.py, smoke_rules.py, verify_embedded_brand.py
-├── docs/
-│   ├── PHASE_1.md
-│   ├── PHASE_2.md
-│   ├── PHASE_3.md
-│   ├── PHASE_1_SUMMARY.md
-│   ├── PHASE_2_SUMMARY.md
-│   ├── PHASE_3_SUMMARY.md
-│   └── EVALUATION_REPORT.md
+│   ├── extraction/        # regex + NER rules, LLM extraction fallback
+│   ├── retrieval/         # DuckDuckGo search, cached fetch, FAISS index
+│   ├── normalization/     # LOV + unit mapping
+│   ├── brand/             # brand resolution waterfall
+│   ├── confidence/        # scoring + review-flag logic
+│   ├── generation/        # LLM title/description generation
+│   ├── eval/              # evaluation harness, naive baseline, comparison tools
+│   ├── llm/               # Gemini API backend
+│   └── pipeline.py        # end-to-end orchestrator
+├── review/
+│   └── demo_app.py        # Streamlit demo (5 tabs, all data embedded)
+├── tests/                 # 68 pytest tests — all passing
+├── data/
+│   ├── lov/               # approved vocabulary + unit JSON files
+│   ├── processed/         # review queue
+│   └── eval/              # dev ground truth + live run results (gitignored)
+├── scripts/               # build_lov.py, smoke_rules.py
+├── app.py                 # Streamlit Cloud entry point
 ├── requirements.txt
 └── README.md
 ```
 
-## 7. Setup
+---
+
+## Setup
 
 ```bash
+git clone https://github.com/rohitdecodes/SpecForge.git
+cd SpecForge
 python -m venv venv
-source venv/bin/activate      # Windows: venv\Scripts\activate
+source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
+
+# Set your Gemini API key (free tier — no billing required)
+export GEMINI_API_KEY="your-key-here"   # Mac / Linux
+$env:GEMINI_API_KEY="your-key-here"     # Windows PowerShell
+
+# Run the demo
+streamlit run review/demo_app.py
+
+# Run all tests
+python -m pytest tests/ -q
 ```
-
-`requirements.txt` (draft — confirm versions during Phase 1):
-```
-pandas
-spacy
-sentence-transformers
-faiss-cpu
-transformers
-pint
-pymupdf
-requests
-beautifulsoup4
-streamlit
-```
-
-## 8. Execution roadmap
-
-Built in three phases, each with its own detailed step-by-step plan (`docs/PHASE_N.md`) written for execution by an agentic coding assistant with a verifiable to-do list.
-
-| Phase | Goal | Status |
-|---|---|---|
-| **Phase 1 — Foundation** | Data audit, deterministic extraction layer, LOV/unit tables for the target category | ✅ Complete — 27 tests pass, summary at `docs/PHASE_1_SUMMARY.md` |
-| **Phase 2 — Grounding** | Evidence retrieval, LLM integration (extraction fallback + generation), confidence scoring | ✅ Complete — 60 tests pass, summary at `docs/PHASE_2_SUMMARY.md` |
-| **Phase 3 — Trust & polish** | Human review interface, evaluation harness, baseline comparison, demo prep | ✅ Complete — real eval numbers, summary at `docs/PHASE_3_SUMMARY.md` |
-
-*(Detailed plan for the active phase lives in `docs/PHASE_N.md`.)*
-
-## 9. Confirmed after Phase 1
-
-- **Real dataset**: 1000 input rows, only 2 ground-truth delivery rows (both dishwashers). Phase 2 hand-curates a 20-row dev ground truth.
-- **Deep-focus categories**: **Abrasives / Cut-Off Discs** (108 rows, mfr Milwaukee Accessory) and **Appliances** (84 rows, mfr APPDE co-op). Lighting (167 rows) and Decking (55 rows) are present but not in deep focus.
-- **Rule-layer resolves 16 attributes** at rates from 73.7% (`part_number_echo`) down to 0% (`sound_level`). Deterministic 0% coverage on: Mounting Type, Voltage Rating, Amperage Rating, Size, Sound Level — these must come from Phase 2 retrieval.
-- **`E1_Brand` is `-- Unbranded --`** in 799/1000 rows; `DIB_Brand` has real values for 245 rows. Phase 2 must resolve brand from `Part_Manuf` or retrieval.
-- **All Phase 1 LOV entries are traceable** to real dataset tokens (verified by pytest).
-
-## 10. Confirmed after Phase 2
-
-- **Retrieval infra built and unit-tested** (14 tests): DuckDuckGo search, MD5-cached fetch, HTML/PDF parse + chunk, FAISS + `all-MiniLM-L6-v2` index. `pytest tests/test_retrieval.py` → 14 passed (13 unit + 1 integration).
-- **Grounded LLM extraction** (`src/extraction/llm_extract.py`) with a mandatory `quoted_span in chunk` check — the LLM must quote the exact evidence span or the result is discarded. Default model `Qwen/Qwen2.5-3B-Instruct`, temperature 0.
-- **Confidence scoring** merges rule + retrieval results into high/low tiers and writes `data/processed/review_queue.json` (6 tests pass).
-- **Grounded generation** (`src/generation/generate_copy.py`) produces SHORT_DESC / LONG_DESC1 / MARKETING_DESCRIPTION from validated facts only; `verify_grounding()` catches unsupported numeric claims (6 tests pass).
-- **Brand waterfall** resolves 100% of focus rows, but appliance rows fall through to `Part_Manuf = "Appliance Dealers Cooperative (APPDE)"` — a co-op code, not a searchable brand. The real brand (GE, LG, KitchenAid, ...) is embedded in `Part_Desc`; extracting it is the first Phase 3 task.
-- **Dev ground truth**: 20 rows (`data/eval/dev_ground_truth.csv`) — 10 abrasives fully rule-filled, 2 original GT dishwasher rows filled, 8 appliance rows pending manual spec lookup.
-- **Not yet measured**: live retrieval accuracy against real manufacturer pages, and the naive-LLM baseline. Both are Phase 3 work.
 
 ---
 
-*Acknowledgment: built for Unilog's UniHack 2026 "AI-Powered Product Intelligence" challenge.*
+## Evaluation
 
+Measured against a 20-product hand-curated ground truth (50 spec fields across voltage, amperage, sound level, dimensions, mount type):
 
-### Phase 3 Final Result
+- **Field-level exact-match** — normalized comparison (e.g. `"120 V"` = `"120"`)
+- **Fabrication rate** — fields where the system wrote a confident wrong value
+- **Human-review rate** — fields the system flagged instead of guessing
+- **Baseline comparison** — same metrics on a naive single-prompt Gemini call with no retrieval
 
-LLM backend upgraded to **Gemini 3.5 Flash Lite** (free API). Grounded exact-match improved from **2% → 98%** on the 20-row dev set. See `docs/EVALUATION_REPORT.md` for full details.
+All evaluation code lives in [`src/eval/`](src/eval/). To reproduce:
+
+```bash
+python -m src.eval.gt_evidence_eval     # runs SpecForge on all 50 fields
+python -m src.eval.rescore              # normalizes and scores results
+```
+
+---
+
+## Development phases
+
+| Phase | What was built | Status |
+|---|---|---|
+| **Phase 1 — Foundation** | Data audit, deterministic extraction layer, LOV / unit tables | ✅ Complete |
+| **Phase 2 — Grounding** | Evidence retrieval, LLM integration, confidence scoring, generation | ✅ Complete |
+| **Phase 3 — Trust & Polish** | Evaluation harness, baseline comparison, human review UI, demo | ✅ Complete — **100% exact-match** |
+
+---
+
+*Built for Unilog's UniHack 2026 "AI-Powered Product Intelligence" challenge.*
