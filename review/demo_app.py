@@ -489,74 +489,33 @@ with t5:
     c4.metric("Naive fabrication",     "15%", "wrong confident answers", delta_color="inverse")
 
     st.markdown("---")
-    st.markdown("#### Per-field accuracy (SpecForge)")
-
-    per_field = [
-        ("Voltage",     10, 10),
-        ("Amperage",    10, 10),
-        ("Sound Level", 10, 10),
-        ("Dimensions",  10, 10),
-        ("Mount Type",  10, 10),
-    ]
-    field_rows = ""
-    for fname, correct, total in per_field:
-        pct = int(100 * correct / total)
-        bar_colour = G if pct >= 90 else Y
-        field_rows += f"""
-        <tr>
-          <td {_TDS}><b>{fname}</b></td>
-          <td {_TDS}>{correct}/{total}</td>
-          <td {_TDS}>
-            <div style="background:#e5e7eb;border-radius:4px;height:10px;width:200px;display:inline-block">
-              <div style="background:{bar_colour};width:{pct}%;height:10px;border-radius:4px"></div>
-            </div>
-            &nbsp;<b>{pct}%</b>
-          </td>
-        </tr>
-        """
+    st.markdown("#### SpecForge vs Naive LLM — side by side")
     st.markdown(f"""
     <table {_TS}>
-      <tr><th {_THS}>Field</th><th {_THS}>Correct / Total</th><th {_THS}>Accuracy</th></tr>
-      {field_rows}
-    </table>
-    """, unsafe_allow_html=True)
-
-    st.markdown("---")
-    col_fab1, col_fab2 = st.columns(2)
-    with col_fab1:
-        st.markdown(f"""
-        <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;padding:20px;text-align:center">
-          <div style="font-size:52px;font-weight:800;color:{R}">15%</div>
-          <div style="font-size:15px;font-weight:600;margin-top:4px">Naive LLM fabrication rate</div>
-          <div style="font-size:13px;color:{GR};margin-top:8px">
-            Confidently wrong on electrical specs<br>it had no evidence to support
-          </div>
-        </div>
-        """, unsafe_allow_html=True)
-    with col_fab2:
-        st.markdown(f"""
-        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:20px;text-align:center">
-          <div style="font-size:52px;font-weight:800;color:{G}">0%</div>
-          <div style="font-size:15px;font-weight:600;margin-top:4px">SpecForge fabrication rate</div>
-          <div style="font-size:13px;color:{GR};margin-top:8px">
-            Never published a value without<br>a quoted span from retrieved evidence
-          </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("---")
-    st.markdown("#### Before vs after Gemini API upgrade")
-    st.markdown(f"""
-    <table {_TS}>
-      <tr><th {_THS}>Metric</th><th {_THS}>Before (Qwen local model — stalled)</th><th {_THS}>After (Gemini Flash API)</th></tr>
-      <tr><td {_TDS}>Grounded exact-match</td>
-          <td {_TDS}><span style="color:{R}">2%  (1 / 50)</span></td>
-          <td {_TDS}><span style="color:{G}"><b>100% (50 / 50)</b></span></td></tr>
-      <tr><td {_TDS}>Root cause</td>
-          <td {_TDS}>6 GB model weights never downloaded on Colab</td>
-          <td {_TDS}>Free-tier API call — no download, ~1 s per field</td></tr>
-      <tr><td {_TDS}>Fields needing human review</td>
-          <td {_TDS}>49 (llm_unavailable)</td>
-          <td {_TDS}><b>0</b> — all 50 fields resolved</td></tr>
+      <tr>
+        <th {_THS}>Metric</th>
+        <th {_THS}>Naive LLM (no retrieval)</th>
+        <th {_THS}>SpecForge</th>
+      </tr>
+      <tr>
+        <td {_TDS}>Exact-match accuracy</td>
+        <td {_TDS}><span style="color:{R};font-weight:700">8% — 4 / 50</span></td>
+        <td {_TDS}><span style="color:{G};font-weight:700">100% — 50 / 50</span></td>
+      </tr>
+      <tr>
+        <td {_TDS}>Fabrication rate</td>
+        <td {_TDS}><span style="color:{R};font-weight:700">15% — confidently wrong answers</span></td>
+        <td {_TDS}><span style="color:{G};font-weight:700">0% — never writes without evidence</span></td>
+      </tr>
+      <tr>
+        <td {_TDS}>Fields needing human review</td>
+        <td {_TDS}><span style="color:{GR}">—</span></td>
+        <td {_TDS}><span style="color:{G};font-weight:700">0</span></td>
+      </tr>
+      <tr>
+        <td {_TDS}>Source quoted per field</td>
+        <td {_TDS}><span style="color:{R}">No — output has no provenance</span></td>
+        <td {_TDS}><span style="color:{G}">Yes — every value cites evidence</span></td>
+      </tr>
     </table>
     """, unsafe_allow_html=True)
