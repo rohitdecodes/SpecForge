@@ -1,11 +1,9 @@
 pandas
-spacy
 sentence-transformers
 faiss-cpu
-transformers
-torch
 pint
-pymupdf
 requests
 beautifulsoup4
 pytest
+streamlit
+duckduckgo-search
