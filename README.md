@@ -167,7 +167,7 @@ Built in three phases, each with its own detailed step-by-step plan (`docs/PHASE
 |---|---|---|
 | **Phase 1 — Foundation** | Data audit, deterministic extraction layer, LOV/unit tables for the target category | ✅ Complete — 27 tests pass, summary at `docs/PHASE_1_SUMMARY.md` |
 | **Phase 2 — Grounding** | Evidence retrieval, LLM integration (extraction fallback + generation), confidence scoring | ✅ Complete — 60 tests pass, summary at `docs/PHASE_2_SUMMARY.md` |
-| **Phase 3 — Trust & polish** | Human review interface, evaluation harness, baseline comparison, demo prep | 🔨 In progress — see `docs/PHASE_3.md` |
+| **Phase 3 — Trust & polish** | Human review interface, evaluation harness, baseline comparison, demo prep | ✅ Complete — real eval numbers, summary at `docs/PHASE_3_SUMMARY.md` |
 
 *(Detailed plan for the active phase lives in `docs/PHASE_N.md`.)*
 
@@ -192,3 +192,8 @@ Built in three phases, each with its own detailed step-by-step plan (`docs/PHASE
 ---
 
 *Acknowledgment: built for Unilog's UniHack 2026 "AI-Powered Product Intelligence" challenge.*
+
+
+### Phase 3 Final Result
+
+LLM backend upgraded to **Gemini 3.5 Flash Lite** (free API). Grounded exact-match improved from **2% → 98%** on the 20-row dev set. See `docs/EVALUATION_REPORT.md` for full details.
