@@ -44,3 +44,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Jupyter notebooks
+*.ipynb
